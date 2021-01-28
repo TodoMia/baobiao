@@ -88,19 +88,27 @@
 			<table border="1px" cellspacing="0" cellpadding="20px" class="table">
 				
 				<tr>
-					<td>运营商</td>
-					<td>模型名称</td>
-					<td>状态</td>
-					<td>链接</td>
-					<td>渠道端口号</td>
-					<td>渠道名称</td>
-					<td>短信网关</td>
-					<td>创建日期</td>
+					<td rowspan="2">运营商</td>
+					<td rowspan="2">模型名称</td>
+					<td rowspan="2">状态</td>
+					<td rowspan="2">链接</td>
+					<td rowspan="2">渠道端口号</td>
+					<td rowspan="2">渠道名称</td>
+					<td rowspan="2">短信网关</td>
+					<td rowspan="2">创建日期</td>
 					<td>模型数据总量</td>
 					<td>发送成功总量</td>
 					<td>IP排重点击量</td>
 					<td>点击率</td>
 					<td>短信成功率</td>
+				</tr>
+				<tr class="green">
+					<!-- <td class="green" colspan="8"></td> -->
+					<td class="green">{{sumDataCount}}</td>
+					<td class="green">{{sumuserDataCount}}</td>
+					<td class="green">{{sumdiffClickCount}}</td>
+					<td class="green">{{(sumdiffClickCount/sumuserDataCount*100).toFixed(3) || 0}}%</td>
+					<td class="green">{{(sumuserDataCount/sumDataCount*100).toFixed(3) || 0}}%</td>
 				</tr>
 				<tr v-for="(item,index) in message" :key="index" >
 					<td>{{item.modelsname.substring(0,2)}}</td>
@@ -156,6 +164,9 @@
 		    new Vue({
 		        el:'#app',
 		        data: {
+					sumDataCount: 0,
+					sumuserDataCount: 0,
+					sumdiffClickCount: 0,
 					tishi: '',
 					reqmessage:'',//请求的全部数据
 					message:'', //当前页数据
@@ -220,6 +231,16 @@
 							}
 						}
 					  }
+					  // 总计
+					  this.sumDataCount=0
+					  this.sumuserDataCount=0
+					  this.sumdiffClickCount=0
+					  for(i=0;i<this.allmessage.length;i++){
+					  						this.sumDataCount+=Number(this.allmessage[i].DataCount)
+					  						this.sumuserDataCount+=Number(this.allmessage[i].userDataCount)
+					  						this.sumdiffClickCount+=Number(this.allmessage[i].diffClickCount)
+					  }
+					  // 总计
 					  this.message=this.allmessage.slice(0,this.pagesize);
 					  this.end=this.pagesize
 					  this.currentPage1=1;
@@ -262,6 +283,16 @@
 							}
 						}
 					  }
+					  // 总计
+					  this.sumDataCount=0
+					  this.sumuserDataCount=0
+					  this.sumdiffClickCount=0
+					  for(i=0;i<this.allmessage.length;i++){
+					  						this.sumDataCount+=Number(this.allmessage[i].DataCount)
+					  						this.sumuserDataCount+=Number(this.allmessage[i].userDataCount)
+					  						this.sumdiffClickCount+=Number(this.allmessage[i].diffClickCount)
+					  }
+					  // 总计
 					  this.message=this.allmessage.slice(0,this.pagesize);
 					  this.end=this.pagesize
 					  this.currentPage1=1;
@@ -296,6 +327,9 @@
 						this.currentPage1=1;
 						this.product='';
 						this.gateway=''
+						this.sumDataCount=0
+						this.sumuserDataCount=0
+						this.sumdiffClickCount=0
 						console.log(this.value1)
 						if(this.value1 == null || this.value1 == ""){
 							var starttime  = ''
@@ -382,6 +416,10 @@
 									this.downloadMessage[i].点击率 = value1+"%"
 									var value2=(this.reqmessage[i].userDataCount/this.reqmessage[i].DataCount*100).toFixed(3)
 									this.downloadMessage[i].短信成功率 = value2+"%"
+									
+									this.sumDataCount+=Number(this.reqmessage[i].DataCount)
+									this.sumuserDataCount+=Number(this.reqmessage[i].userDataCount)
+									this.sumdiffClickCount+=Number(this.reqmessage[i].diffClickCount)
 								}
 								this.totals=this.reqmessage.length
 							})
