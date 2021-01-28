@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8"/>
+  <title> New Document </title>
+  <style type="text/css">
+  	*{
+		margin: 0;
+		padding: 0;
+	}
+	form{
+		margin:10px;
+	}
+  </style>
+</head> 
+<body>
+
+    <form>
+        <input id="user" type="text" required pattern="^[a-zA-Z0-9]{6,12}$" placeholder="请输入用户名"/>
+        <input type="submit" value="提交">
+    </form>
+	<p>HTML5中针对表单新增的验证属性如required、pattern以及一些特定input类型，当验证不通过时，都有默认的提示语句，但实践中发现并不怎么友好，因此，需要自定义提示语句，使用setCustomValidity()。在此之前，需要介绍一下表单的validityState对象。</p>
+	<p>HTML5表单新增的属性中有一个validity属性，通过该属性可以获得一个validityState的对象，而validityState对象针对表单的几个错误验证又提供了8个属性：</p>
+	<h4>valueMissing</h4>
+	<p>必填项为空，返回true，否则返回false，配合required属性使用</p>
+	<h4>typeMismatch</h4>
+	<p>判断输入类型是否匹配，不匹配返回true，否则返回false，配合email、number、url等类型使用</p>
+	<h4>patternMismatch</h4>
+	<p>判断正则是否通过，没通过返回true，通过返回false，配合pattern属性使用</p>
+	<h4>toolong</h4>
+	<p>判断当前元素的值的长度是否大最大值，大于返回true，否则返回false，配合maxlength使用，但实际上如果设置maxlength，就无法输入超出长度范围的值</p>
+	<h4>rangeUnderflow</h4>
+	<p>判断当前元素值是否小于min，与min属性配合，不与max比较</p>
+	<h4>rangeOverflow</h4>
+	<p>判断当前元素值是否大于max，与max属性配合，不与min比较</p>
+	<h4>stepMismatch</h4>
+	<p>判断当前元素值是否符合step要求，与step属性配合</p>
+	<h4>customError</h4>
+	<p>使用自定义的验证错误提示信息，配合setCustomValidity()方法使用；</p>
+	<br>
+	<p>使用自定义的验证错误提示信息，配合setCustomValidity()方法使用；
+如果使用了setCustomValidity()方法，customError属性返回true，那么当输入正确时，不能使用上述的任何一种属性验证输入是否正确，所有的验证都返回false，表单的验证逻辑将会出现bug。因此，在自定义错误提示信息时，需要首先使用input.value判断输入是否为空，如果不是空值，调用input.setCustomValidity(“”)将提示信息设为空，从而屏蔽输入正确时出现的验证逻辑错误，之后再设置自定义错误提示语，</p>
+</body>
+<script>
+	var user=document.getElementById("user");
+    user.onblur=function(){
+        if(user.value){
+            user.setCustomValidity("");//现将有输入时的提示设置为空
+        }else if(user.validity.valueMissing){
+            user.setCustomValidity("用户名不能为空");  
+        };
+        if(user.validity.patternMismatch){ 
+            user.setCustomValidity("用户名只能是英文或数字，长度6到12位");
+        }
+    };
+</script>
+</html>

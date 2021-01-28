@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link rel="stylesheet" href="./css/shuju.css">
+		<script src="js/vue2-6.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/vue-router2.0.js" type="text/javascript" charset="utf-8"></script>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<!-- 引入样式 -->
+		<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+		<!-- 引入组件库 -->
+		<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+		<!-- <script src="https://cuikangjie.github.io/JsonExportExcel/dist/JsonExportExcel.min.js"></script> -->
+		<script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+		<style>
+		  .demo-table-expand {
+		    font-size: 0;
+		  }
+		  .demo-table-expand label {
+		    width: 90px;
+		    color: #99a9bf;
+		  }
+		  .demo-table-expand .el-form-item {
+		    margin-right: 0;
+		    margin-bottom: 0;
+		    width: 50%;
+		  }
+		</style>
+	</head>
+	<body>
+		<div id="app">
+			<template>
+			  <el-table
+			    :data="tableData"
+				@expand-change="zhankai"
+			    style="width: 100%">
+			    <el-table-column type="expand">
+			      <template slot-scope="props">
+			        <el-form label-position="left" inline class="demo-table-expand">
+			          <el-form-item label="商品名称">
+			            <span>{{}}</span>
+			          </el-form-item>
+			          <el-form-item label="所属店铺">
+			            <span>{{ props.row.shop }}</span>
+			          </el-form-item>
+			        </el-form>
+			      </template>
+			    </el-table-column>
+			    <el-table-column
+			      label="商品 ID"
+			      prop="id">
+			    </el-table-column>
+			    <el-table-column
+			      label="商品名称"
+			      prop="name">
+			    </el-table-column>
+			    <el-table-column
+			      label="描述"
+			      prop="desc">
+			    </el-table-column>
+			  </el-table>
+			</template>
+		</div>
+
+
+		
+		<script type="text/javascript">
+		new Vue({
+		    el:'#app',
+		    data() {
+				return {
+				        tableData: [{
+				          id: '12987122',
+				          name: '好滋好味鸡蛋仔',
+				          category: '江浙小吃、小吃零食',
+				          desc: '荷兰优质淡奶，奶香浓而不腻',
+				          address: '上海市普陀区真北路',
+				          shop: '王小虎夫妻店',
+				          shopId: '10333'
+				        }, {
+				          id: '12987123',
+				          name: '好滋好味鸡蛋仔',
+				          category: '江浙小吃、小吃零食',
+				          desc: '荷兰优质淡奶，奶香浓而不腻',
+				          address: '上海市普陀区真北路',
+				          shop: '王小虎夫妻店',
+				          shopId: '10333'
+				        }, {
+				          id: '12987125',
+				          name: '好滋好味鸡蛋仔',
+				          category: '江浙小吃、小吃零食',
+				          desc: '荷兰优质淡奶，奶香浓而不腻',
+				          address: '上海市普陀区真北路',
+				          shop: '王小虎夫妻店',
+				          shopId: '10333'
+				        }, {
+				          id: '12987126',
+				          name: '好滋好味鸡蛋仔',
+				          category: '江浙小吃、小吃零食',
+				          desc: '荷兰优质淡奶，奶香浓而不腻',
+				          address: '上海市普陀区真北路',
+				          shop: '王小虎夫妻店',
+				          shopId: '10333'
+				        }],
+						detail:[
+							{
+								id: '12987122',
+								con:'内容1'
+							},
+							{
+								id: '12987122',
+								con:'内容11'
+							},
+							{
+								id: '12987123',
+								con:'内容2'
+							},
+							{
+								id: '12987125',
+								con:'内容3'
+							},
+							{
+								id: '12987126',
+								con:'内容4'
+							}
+						]
+				      }
+		    },
+			computed: {
+			},
+			mounted() {
+				
+			},
+			methods:{
+				zhankai(row, column, event){
+					console.log("展开了")
+					console.log(row)
+				}
+			},
+			created: function(){
+				for(i in this.tableData){
+					this.tableData[i].de=[]
+					for(j in this.detail){
+						if(this.tableData[i].id == this.detail[j].id){
+							this.tableData[i].de.push(this.detail[j])
+						}
+					}
+					
+				}
+				console.log(this.tableData)
+				
+			},
+			
+			
+			
+		});
+		  
+		</script>
+		
+	</body>
+</html>

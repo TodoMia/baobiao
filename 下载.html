@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link rel="stylesheet" href="./css/shuju.css">
+		<script src="js/vue2-6.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/vue-router2.0.js" type="text/javascript" charset="utf-8"></script>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<!-- 引入样式 -->
+		<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+		<!-- 引入组件库 -->
+		<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+		<!-- <script src="https://cuikangjie.github.io/JsonExportExcel/dist/JsonExportExcel.min.js"></script> -->
+		<script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+	</head>
+	<body>
+		<div id="app">
+			<h1>{{tishi}}</h1>
+			<p>运营下载</p>
+			<p>刘总下载</p>
+			<!-- <div>{{message}}</div> -->
+			<!-- <input type="button" value="get请求" class="get"> -->
+			<!-- <p @click="reque">点击</p> -->
+			<!-- <div class="search"> -->
+				<!-- <div >
+					<label for="product">产品：</label>
+					<input type="text" name="" id="product" v-model="product">
+				</div>
+				<div>
+					<label for="gateway">短信网关：</label>
+					<input type="text" name="" id="gateway" v-model="gateway">
+				</div>
+				<div>
+					<label for="creatData">创建日期：</label>
+					<!-- <input type="date" name="" id="creatData" v-model="creatData"> -->
+					<!-- <div class="block riqi">
+						<el-date-picker
+						  v-model="value1"
+						  type="daterange"
+						  range-separator="至"
+						  start-placeholder="开始日期"
+						  end-placeholder="结束日期"
+						  value-format="yyyy-MM-dd"
+						  >
+						  
+						</el-date-picker>
+						
+					</div> -->
+				<!-- </div> --> 
+				<!-- <div> -->
+					<!-- <span class="chaxun" @click="chaxun">查询</span> -->
+					<!-- <span class="chaxun" @click="xiazai">下载</span> -->
+					<!-- <el-button type="text" @click="open">下载</el-button> -->
+					<!-- <el-button type="text" @click="xiazai">下载</el-button> -->
+				<!-- </div> -->
+				<!-- <div>
+
+				</div>
+			</div> -->
+
+			
+			
+		</div>
+
+
+		
+		<script type="text/javascript">
+		
+		    new Vue({
+		        el:'#app',
+		        data: {
+					tishi: '',
+					message:'', //当前页数据
+					allmessage:'', //全部数据，分页需要
+					downloadMessage: '', //下载数据
+					product:"",
+					gateway:"",
+					creatData:"",
+					total:'',
+					prev:'',
+					pager:'',
+					next:'',
+					currentPage1: 1,
+					value1:'',
+					totals: 0,
+					pagesize: 50,//每页3条
+					start:0,
+					end:0,
+					error:''
+		        },
+				methods:{
+					chaxun(){
+						// url="./data/shuju.json?product="+this.product+"&gateway="+this.gateway+"&starttime="+starttime+"&endtime="+endtime
+						// url = "http://v.juhe.cn/weather/geo"
+						url="http://www.w4l.cn:8888/api/v1/downtargetfile2"
+						console.log(url)
+						// const postdata = {"lon":"116.39277","lat":"39.933748","dtype":"json","key":"0f1c6ff6efc0408eddf0f07e792c6e5c"}
+						const postdata={}
+						
+						// 添加请求拦截器
+						axios.interceptors.request.use((config) => {
+						    // 在发送请求之前做些什么
+							this.tishi = "数据请求中...";
+							console.log("请求中"+this.tishi)
+						    return config;
+						  }, function (error) {
+						    // 对请求错误做些什么
+						    return Promise.reject(error);
+						  });
+						
+						// 添加响应拦截器
+						axios.interceptors.response.use( (response) => {
+							this.tishi="下载中";
+							console.log("请求完了"+this.tishi)
+						    // 对响应数据做点什么
+						    return response;
+						  }, function (error) {
+						    // 对响应错误做点什么
+						    return Promise.reject(error);
+						  });
+						  
+						  
+						axios.post(url,postdata,{responseType: 'blob'})
+							.then(res => {
+								console.log(res.data)
+								const blob = res.data;
+								  const reader = new FileReader();   
+								  reader.readAsDataURL(blob);
+								  reader.onload = (e) => {
+								    const a = document.createElement('a');
+									const name = (new Date()).getFullYear()+""+((new Date()).getMonth()+1)+""+(new Date()).getDate()+"-"+(new Date()).getHours()+"_"+(new Date()).getMinutes();
+								    a.download = name+`lz.zip`;
+								    // 后端设置的文件名称在res.headers的 "content-disposition": "form-data; name=\"attachment\"; filename=\"20181211191944.zip\"",
+								    a.href = e.target.result;
+								    document.body.appendChild(a);
+								    a.click();
+								    document.body.removeChild(a);
+								  };
+							})
+							.catch(err => {
+								console.error(err);
+							})
+						console.log("axios拦截器");
+						
+					}
+				},
+				created: function(){
+					this.chaxun()
+				}
+				
+		    });
+			
+			
+		
+		</script>
+	</body>
+</html>

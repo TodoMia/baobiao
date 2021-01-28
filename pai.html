@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>运营报表</title>
+		<link rel="stylesheet" href="./css/shuju.css">
+		<!-- <script src="js/vue2-6.js" type="text/javascript" charset="utf-8"></script> -->
+		<script src="./js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/vue-router2.0.js" type="text/javascript" charset="utf-8"></script>
+		<!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
+		<script src="./js/axios.min.js" type="text/javascript" charset="utf-8"></script>
+		<!-- 引入样式 -->
+		<!-- <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"> -->
+		<link rel="stylesheet" type="text/css" href="./css/element.css"/>
+		<!-- 引入组件库 -->
+		<!-- <script src="https://unpkg.com/element-ui/lib/index.js"></script> -->
+		<script src="./js/element_index.js" type="text/javascript"></script>
+		<!-- <script src="https://cuikangjie.github.io/JsonExportExcel/dist/JsonExportExcel.min.js"></script> -->
+		<!-- <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script> -->
+		<script src="./js/xlsx.full.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div id="app">
+			<h1>运营报表{{tishi}}</h1>
+			<!-- <div>{{message}}</div> -->
+			<!-- <input type="button" value="get请求" class="get"> -->
+			<!-- <p @click="reque">点击</p> -->
+			<div class="search">
+				<div class="gateway">
+					<label for="gateway">运营商：</label>
+					<!-- <input type="text" name="" id="gateway" v-model="gateway"> -->
+					<template>
+						<el-select v-model="gateway" filterable clearable placeholder="请选择" >
+						  <el-option
+							v-for="(opt,index) in options2"
+							:key="index"
+							:label="opt"
+							:value="opt"
+							>
+						  </el-option>
+						</el-select>
+					</template>
+				</div>
+				<div >
+					<label for="product">产品：</label>
+					<!-- <input type="text" name="" id="product" v-model="product"> -->
+					<template>
+						<el-select v-model="product" filterable clearable placeholder="请选择" >
+						  <el-option
+							v-for="opt in options"
+							:key="opt"
+							:label="opt"
+							:value="opt"
+							>
+						  </el-option>
+						</el-select>
+					</template>
+				</div>
+				
+				<div>
+					<label for="creatData">创建日期：</label>
+					<!-- <input type="date" name="" id="creatData" v-model="creatData"> -->
+					<div class="block riqi">
+						<el-date-picker
+						  v-model="value1"
+						  type="daterange"
+						  range-separator="至"
+						  start-placeholder="开始日期"
+						  end-placeholder="结束日期"
+						  value-format="yyyy-MM-dd"
+						  >
+						</el-date-picker>
+						
+						
+					</div>
+				</div>
+				<div>
+					<span class="chaxun" @click="chaxun">查询</span>
+					<!-- <span class="chaxun" @click="xiazai">下载</span> -->
+					<el-button type="text" @click="open">下载</el-button>
+					<!-- <el-button type="text" @click="xiazai">下载</el-button> -->
+				</div>
+				<div>
+
+				</div>
+			</div>
+			
+			<table border="1px" cellspacing="0" cellpadding="20px" class="table">
+				
+				<tr>
+					<td>运营商</td>
+					<td>模型名称</td>
+					<td>状态</td>
+					<td>链接</td>
+					<td>渠道端口号</td>
+					<td>渠道名称</td>
+					<td>短信网关</td>
+					<td>创建日期</td>
+					<td>模型数据总量</td>
+					<td>发送成功总量</td>
+					<td>IP排重点击量</td>
+					<td>点击率</td>
+					<td>短信成功率</td>
+				</tr>
+				
+				<tr v-for="(item,index) in message" :key="index" >
+					<td>{{item.modelsname.substring(0,2)}}</td>
+					<td>{{item.modelsname}}</td>
+					<td>{{item.status == 0 ? '暂停' : '正常'}}</td>
+					<td>{{item.gamename}}</td>
+					<td>{{item.qddk}}</td>
+					<td>{{item.qdmc}}</td>
+					<td>{{item.dxwg}}</td>
+					<td>{{item.creattime}}</td>
+					<!-- 模型数据总量 -->
+					<td>{{item.DataCount}}</td>
+					<!--发送成功总量  -->
+					<td>{{item.userDataCount}}</td>
+					<!-- IP排重点击量 -->
+					<td>{{item.diffClickCount}}</td>
+					<td>
+						{{(item.diffClickCount/item.userDataCount*100).toFixed(3) || 0}}%
+					</td>
+					<td>
+						{{(item.userDataCount/item.DataCount*100).toFixed(3) || 0}}%
+					</td>
+				</tr>
+			</table>
+
+			<!-- {{error}} -->
+			
+			<div class="block fenye">
+				<el-pagination
+				  @size-change="handleSizeChange"
+				  @current-change="handleCurrentChange"
+				  :current-page.sync="currentPage1"
+				  :page-size="pagesize"
+				  layout="total, prev, pager, next"
+				  :total="totals">
+				</el-pagination>
+				<!-- 
+					current-page:当前页数
+					page-size:每页显示条目个数
+					total:总条目数
+					page-count:总页数
+
+				 -->
+			</div>
+			
+			
+		</div>
+
+
+		
+		<script type="text/javascript">
+		
+		    new Vue({
+		        el:'#app',
+		        data: {
+					sumDataCount:'',
+					sumuserDataCount:'',
+					sumdiffClickCount:'',
+					tishi: '',
+					reqmessage:'',//请求的全部数据
+					message:'', //当前页数据
+					allmessage:'', //全部数据，分页需要
+					downloadMessage: '', //下载数据
+					product:"",
+					gateway:"",
+					creatData:"",
+					total:'',
+					prev:'',
+					pager:'',
+					next:'',
+					currentPage1: 1,
+					value1:'',
+					totals: 0,
+					pagesize: 50,//每页3条
+					start:0,
+					end:0,
+					error:'',
+					options: [],
+					options2:[]
+		        },
+				// computed: {
+				//     allmessage: function () {
+				//       return this.value
+				//     }
+				// },
+				watch: {
+				    product: function (val) {
+						// console.log(val)
+						this.allmessage=[]
+						
+					  if(val==''){
+						  if(this.gateway == ''){
+							this.allmessage=this.reqmessage
+						  }else{
+							  for(i=0;i<this.reqmessage.length;i++){
+								// console.log(this.reqmessage[i].dxwg)
+								if(this.reqmessage[i].modelsname.substring(0,2) == this.gateway){
+								  this.allmessage.push(this.reqmessage[i])
+								}
+							  }
+						  }
+					  }else{
+						var reg = new RegExp('[\u4e00-\u9fa5]+$','g');
+						val=val.match(/[\u4e00-\u9fa5]/g).join("");
+						if(this.gateway == ''){
+							for(i=0;i<this.reqmessage.length;i++){
+							  // console.log(this.reqmessage[i].gamename)
+							  var provl=this.reqmessage[i].gamename.match(/[\u4e00-\u9fa5]/g).join("");
+							  if(provl == val){
+								  this.allmessage.push(this.reqmessage[i])
+								}
+							}
+						}else{
+							for(i=0;i<this.reqmessage.length;i++){
+								// console.log(this.reqmessage[i].gamename)
+							  var provl=this.reqmessage[i].gamename.match(/[\u4e00-\u9fa5]/g).join("");
+							  if(provl == val && this.reqmessage[i].modelsname.substring(0,2) == this.gateway){
+								  this.allmessage.push(this.reqmessage[i])
+							  }
+							}
+						}
+					  }
+					  this.message=this.allmessage.slice(0,this.pagesize);
+					  this.end=this.pagesize
+					  this.currentPage1=1;
+					  this.totals=this.allmessage.length
+				    },
+					gateway: function (val) {
+						// console.log(val)
+						this.allmessage=[]
+					  if(val==''){
+						if(this.product == ''){
+							this.allmessage=this.reqmessage
+						}else{
+						  for(i=0;i<this.reqmessage.length;i++){
+							// console.log(this.reqmessage[i].dxwg)
+							var reg = new RegExp('[\u4e00-\u9fa5]+$','g');
+							var provlthis=this.product.match(/[\u4e00-\u9fa5]/g).join("");
+							var provl=this.reqmessage[i].gamename.match(/[\u4e00-\u9fa5]/g).join("");
+							if(provl == provlthis){
+							  this.allmessage.push(this.reqmessage[i])
+							}
+						  }
+						}
+					  }else{
+						if(this.product == ''){
+							for(i=0;i<this.reqmessage.length;i++){
+							  // console.log(this.reqmessage[i].dxwg)
+							  if(this.reqmessage[i].modelsname.substring(0,2) == val){
+								  this.allmessage.push(this.reqmessage[i])
+							  }
+							}
+						}else{
+							for(i=0;i<this.reqmessage.length;i++){
+							  // console.log(this.reqmessage[i].dxwg)
+							  var reg = new RegExp('[\u4e00-\u9fa5]+$','g');
+							  var provlthis=this.product.match(/[\u4e00-\u9fa5]/g).join("");
+							  var provl=this.reqmessage[i].gamename.match(/[\u4e00-\u9fa5]/g).join("");
+							  if(this.reqmessage[i].modelsname.substring(0,2) == val && provl == provlthis){
+								  this.allmessage.push(this.reqmessage[i])
+							  }
+							}
+						}
+					  }
+					  this.message=this.allmessage.slice(0,this.pagesize);
+					  this.end=this.pagesize
+					  this.currentPage1=1;
+					  this.totals=this.allmessage.length
+					}
+				},
+				methods:{
+					dingshi(){
+						// this.chaxun()
+						// console.log("定时器执行了")
+						// this.end=this.pagesize
+						this.timer = setInterval(()=>{
+							// this.currentPage1=1
+							this.chaxun()
+							console.log("定时器执行了")
+						}, 1000*60*30);
+					},
+					handleSizeChange(){
+						console.log(111)
+					},
+					handleCurrentChange(){
+						this.start=(this.currentPage1-1)*this.pagesize
+						console.log(this.start)
+						this.end=this.currentPage1*this.pagesize
+						console.log(this.end)
+						this.message=this.allmessage.slice(this.start,this.end);
+						console.log(000+this.currentPage1)
+						
+					},
+					chaxun(){
+						this.end=this.pagesize
+						this.currentPage1=1;
+						this.product='';
+						this.gateway=''
+						console.log(this.value1)
+						if(this.value1 == null || this.value1 == ""){
+							var starttime  = ''
+							var endtime = ''
+						}else{
+							var starttime  = this.value1[0]+" 00:00:00"
+							var endtime = this.value1[1]+" 23:59:59"
+						}
+						const postdata={
+							"starttime": starttime,
+							"endtime": endtime
+						}
+						console.log(postdata)
+						// url="./data/shuju.json?product="+this.product+"&gateway="+this.gateway+"&starttime="+starttime+"&endtime="+endtime
+						url="http://139.196.23.101:10085/api/v1/findmodels"  //pai
+						// url="http://139.196.23.101:8088/api/v1/findmodels"   //yqh
+						// url="http://192.168.3.100:10085/api/v1/findmodels"
+						console.log(url)
+						// 添加请求拦截器
+						axios.interceptors.request.use((config) => {
+						    // 在发送请求之前做些什么
+							this.tishi = "数据请求中...";
+							console.log("请求中"+this.tishi)
+						    return config;
+						  }, function (error) {
+						    // 对请求错误做些什么
+						    return Promise.reject(error);
+						  });
+						
+						// 添加响应拦截器
+						axios.interceptors.response.use( (response) => {
+							this.tishi="";
+							console.log("请求完了"+this.tishi)
+						    // 对响应数据做点什么
+						    return response;
+						  }, function (error) {
+						    // 对响应错误做点什么
+						    return Promise.reject(error);
+						  });
+						axios.post(url,postdata)
+							.then(res => {
+								console.log("查询数据"+res.data.datalist.length)
+								// console.log("长度"+res.data.length)
+								this.reqmessage=res.data.datalist;
+								this.reqmessage.sort(function(a, b) {
+									return (a.modelsname + '').localeCompare(b.modelsname + '')
+								})
+								this.allmessage=this.reqmessage;
+								this.message=this.allmessage.slice(0,this.pagesize);
+								this.downloadMessage = []
+								this.options=[];
+								this.options2=[];
+								for(i=0;i<this.reqmessage.length;i++){
+									this.downloadMessage[i] = {}
+									this.downloadMessage[i].运营商 = this.reqmessage[i].modelsname.substring(0,2)
+									if(this.options2.indexOf(this.reqmessage[i].modelsname.substring(0,2)) == '-1'){
+										// console.log(this.options2)
+										this.options2.push(this.reqmessage[i].modelsname.substring(0,2))
+									}
+									this.downloadMessage[i].模型名称 = this.reqmessage[i].modelsname
+									
+									if(this.reqmessage[i].status == 0){
+										this.downloadMessage[i].状态 = "暂停"
+									}else{
+										this.downloadMessage[i].状态 = "正常"
+									}
+									this.downloadMessage[i].链接 = this.reqmessage[i].gamename
+									var reg = new RegExp('[\u4e00-\u9fa5]+$','g');
+									var gamenamevl=this.reqmessage[i].gamename.match(/[\u4e00-\u9fa5]/g).join("")
+									// console.log(gamenamevl)
+									if(this.options.indexOf(gamenamevl) == '-1'){
+										console.log(this.options)
+										this.options.push(gamenamevl)
+									}
+									this.downloadMessage[i].渠道端口号 = this.reqmessage[i].qddk
+									this.downloadMessage[i].渠道名称 = this.reqmessage[i].qdmc
+									this.downloadMessage[i].短信网关 = this.reqmessage[i].dxwg
+									
+									this.downloadMessage[i].创建日期 = this.reqmessage[i].creattime
+									this.downloadMessage[i].模型数据总量 = this.reqmessage[i].DataCount
+									this.downloadMessage[i].发送成功总量 = this.reqmessage[i].userDataCount
+									this.downloadMessage[i].IP排重总量 = this.reqmessage[i].diffClickCount
+									var value1=(this.reqmessage[i].diffClickCount/this.reqmessage[i].userDataCount*100).toFixed(3)
+									this.downloadMessage[i].点击率 = value1+"%"
+									var value2=(this.reqmessage[i].userDataCount/this.reqmessage[i].DataCount*100).toFixed(3)
+									this.downloadMessage[i].短信成功率 = value2+"%"
+
+									// sumDataCount:'',
+									// sumuserDataCount:'',
+									// sumdiffClickCount:'',
+									this.sumDataCount+=this.reqmessage[i].DataCount
+									this.sumuserDataCount+=this.reqmessage[i].userDataCount
+									this.sumdiffClickCount+=this.reqmessage[i].diffClickCount
+								}
+								this.totals=this.reqmessage.length
+							})
+							.catch(err => {
+								console.error(err);
+							})
+						console.log("axios拦截器");
+						
+					},
+					open() {
+						this.$confirm('下载报表?', '提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+						}).then(() => {
+							console.log(this.allmessage)
+							console.log(this.downloadMessage)
+							var json=this.downloadMessage
+							// var name=(new Date()).getFullYear();
+							var name = (new Date()).getFullYear()+""+((new Date()).getMonth()+1)+""+(new Date()).getDate()+"-"+(new Date()).getHours()+"_"+(new Date()).getMinutes();
+							console.log(name)
+							var filename = name+".xlsx";
+							var ws_name = "SheetJS";
+							var wb = XLSX.utils.book_new();
+							var ws = XLSX.utils.json_to_sheet(json);
+							XLSX.utils.book_append_sheet(wb, ws, ws_name);
+							XLSX.writeFile(wb, filename);
+						}).catch(() => {
+							this.$message({
+								type: 'info',
+								message: '已取消下载'
+							});          
+						});
+					}
+				},
+				created: function(){
+					this.chaxun()
+					this.dingshi()
+				}
+				
+		    });
+			
+			
+		
+		</script>
+	</body>
+</html>

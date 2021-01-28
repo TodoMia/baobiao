@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link rel="stylesheet" href="./css/shuju.css">
+		<script src="js/vue2-6.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/vue-router2.0.js" type="text/javascript" charset="utf-8"></script>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<!-- 引入样式 -->
+		<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+		<!-- 引入组件库 -->
+		<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+		<!-- <script src="https://cuikangjie.github.io/JsonExportExcel/dist/JsonExportExcel.min.js"></script> -->
+		<script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+	</head>
+	<body>
+		<div id="app">
+			<h1>运营报表</h1>
+			<!-- <div>{{message}}</div> -->
+			<!-- <input type="button" value="get请求" class="get"> -->
+			<!-- <p @click="reque">点击</p> -->
+			<div class="search">
+				<div >
+					<label for="product">产品：</label>
+					<input type="text" name="" id="product" v-model="product">
+				</div>
+				<div>
+					<label for="gateway">短信网关：</label>
+					<input type="text" name="" id="gateway" v-model="gateway">
+				</div>
+				<div>
+					<label for="creatData">创建日期：</label>
+					<!-- <input type="date" name="" id="creatData" v-model="creatData"> -->
+					<div class="block riqi">
+						<el-date-picker
+						  v-model="value1"
+						  type="daterange"
+						  range-separator="至"
+						  start-placeholder="开始日期"
+						  end-placeholder="结束日期"
+						  value-format="yyyy-MM-dd"
+						  >
+						  
+						</el-date-picker>
+						
+					</div>
+				</div>
+				<div>
+					<span class="chaxun" @click="chaxun">查询</span>
+					<!-- <span class="chaxun" @click="xiazai">下载</span> -->
+					<el-button type="text" @click="open">下载</el-button>
+					<!-- <el-button type="text" @click="xiazai">下载</el-button> -->
+				</div>
+				<div>
+
+				</div>
+			</div>
+			<table border="1px" cellspacing="0" cellpadding="20px" class="table">
+				<tr>
+					<td>模型名称</td>
+					<td>状态</td>
+					<td>产品</td>
+					<td>渠道号</td>
+					<td>模板</td>
+					<td>短信网关</td>
+					<td>创建日期</td>
+					<td>模型数据总量</td>
+					<td>发送成功总量</td>
+					<td>IP排重点击量</td>
+					<td>点击率</td>
+					<td>短信成功率</td>
+				</tr>
+				<tr v-for="(item,index) in message" :key="index">
+					<td>{{item.modelsname}}</td>
+					<td>{{item.status == 0 ? '暂停' : '正常'}}</td>
+					<td>{{item.gamename}}</td>
+					<td>{{item.xdh}}</td>
+					<td>{{item.mb}}</td>
+					<td>{{item.dxwg}}</td>
+					<td>{{item.creattime}}</td>
+					<!-- 模型数据总量 -->
+					<td>{{item.DataCount}}</td>
+					<!--发送成功总量  -->
+					<td>{{item.userDataCount}}</td>
+					<!-- IP排重点击量 -->
+					<td>{{item.clickDataCount}}</td>
+					<td>
+						<!-- {{item.点击率}}-- -->
+						<!-- {{item.IP排重点击量/item.发送成功总量 || 0}} -->
+						{{Math.round(item.clickDataCount/item.userDataCount*100) || 0}}%
+					</td>
+					<td>
+						{{Math.round(item.userDataCount/item.DataCount*100) || 0}}%
+					</td>
+				</tr>
+			</table>
+
+			{{error}}
+
+			<div class="block fenye">
+				<el-pagination
+				  @size-change="handleSizeChange"
+				  @current-change="handleCurrentChange"
+				  :current-page.sync="currentPage1"
+				  :page-size="pagesize"
+				  layout="total, prev, pager, next"
+				  :total="totals">
+				</el-pagination>
+				<!-- 
+					current-page:当前页数
+					page-size:每页显示条目个数
+					total:总条目数
+					page-count:总页数
+
+				 -->
+			</div>
+			
+			
+		</div>
+
+
+		
+		<script type="text/javascript">
+		
+		    new Vue({
+		        el:'#app',
+		        data: {
+					message:'', //当前页数据
+					allmessage:'', //全部数据，分页需要
+					downloadMessage: '', //下载数据
+					product:"",
+					gateway:"",
+					creatData:"",
+					total:'',
+					prev:'',
+					pager:'',
+					next:'',
+					currentPage1: 1,
+					value1:'',
+					totals: 0,
+					pagesize: 50,//每页3条
+					start:0,
+					end:0,
+					error:''
+		        },
+				methods:{
+					handleSizeChange(){
+						console.log(111)
+						// this.start=(this.currentPage1-1)*this.pagesize
+						// console.log(this.start)
+						// this.end=this.currentPage1*this.pagesize
+						// console.log(this.end)
+						// this.message=this.allmessage.slice(this.start,this.end);
+						// console.log(000+this.message)
+					},
+					handleCurrentChange(){
+						this.start=(this.currentPage1-1)*this.pagesize
+						console.log(this.start)
+						this.end=this.currentPage1*this.pagesize
+						console.log(this.end)
+						this.message=this.allmessage.slice(this.start,this.end);
+						console.log(000+this.message)
+						
+					},
+					chaxun(){
+						this.end=this.pagesize
+						console.log(this.value1)
+						var starttime  = this.value1[0]
+						var endtime = this.value1[1]
+						const postdata={
+							"starttime": starttime,
+							"endtime": endtime
+							}
+						// url="./data/shuju.json?product="+this.product+"&gateway="+this.gateway+"&starttime="+starttime+"&endtime="+endtime
+						url="http://192.168.3.100:10085/api/v1/findmodels"
+						console.log(url)
+						axios.post(url,postdata)
+							.then(res => {
+								console.log("查询数据"+res.data.datalist.length)
+								// console.log("长度"+res.data.length)
+								this.message=res.data.datalist.slice(0,this.pagesize);
+								this.allmessage=res.data.datalist;
+								this.downloadMessage = []
+								for(i=0;i<res.data.datalist.length;i++){
+									// Vue.$set([downloadMessage],'模型名称',121)
+									// this.downloadMessage[i].模型名称 = {}
+									this.downloadMessage[i] = {}
+									this.downloadMessage[i].模型名称 = res.data.datalist[i].modelsname
+									// this.downloadMessage[i].状态 = res.data.datalist[i].status
+									if(res.data.datalist[i].status == 0){
+										this.downloadMessage[i].状态 = "暂停"
+									}else{
+										this.downloadMessage[i].状态 = "正常"
+									}
+									this.downloadMessage[i].产品 = res.data.datalist[i].gamename
+									this.downloadMessage[i].渠道号 = res.data.datalist[i].xdh
+									this.downloadMessage[i].模板 = res.data.datalist[i].mb
+									this.downloadMessage[i].短信网关 = res.data.datalist[i].dxwg
+									this.downloadMessage[i].创建日期 = res.data.datalist[i].creattime
+									this.downloadMessage[i].模型数据总量 = res.data.datalist[i].DataCount
+									this.downloadMessage[i].发送成功总量 = res.data.datalist[i].userDataCount
+									this.downloadMessage[i].IP排重总量 = res.data.datalist[i].clickDataCount
+									
+									var value1=Math.round(res.data.datalist[i].clickDataCount/res.data.datalist[i].userDataCount*100)
+									if(res.data.datalist[i].userDataCount == 0){
+										value1 = 0
+									}
+									// console.log(value1)
+									this.downloadMessage[i].点击率 = value1+"%"
+									var value2=Math.round(res.data.datalist[i].userDataCount/res.data.datalist[i].DataCount*100)
+									if(res.data.datalist[i].DataCount == 0){
+										value2 = 0
+									}
+									this.downloadMessage[i].短信成功率 = value2+"%"
+									// console.log(value2)
+									// console.log(this.downloadMessage[i])
+								}
+								this.totals=res.data.datalist.length
+							})
+							.catch(err => {
+								console.error(err);
+							})
+						console.log("object");
+					},
+					xiazai(){
+						axios.post("http://192.168.3.100:10085/api/v1/export",'')
+							.then(res => {
+								// console.log("长度"+res.data.datalist.length)
+								console.log("下载啦啦啦啦")
+								// console.log("长度"+res.data.datalist)
+								
+								// this.message=res.data.datalist.slice(0,this.pagesize);
+								// this.allmessage=res.data.datalist;
+								// console.log(this.message)
+								// this.totals=res.data.datalist.length
+							})
+							.catch(err => {
+								console.error(err);
+							})
+						
+					},
+					open() {
+						this.$confirm('下载报表?', '提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+						}).then(() => {
+							console.log(this.allmessage)
+							console.log(this.downloadMessage)
+							var json=this.downloadMessage
+							var name=(new Date()).valueOf();
+							console.log(name)
+							var filename = name+".xlsx";
+							var ws_name = "SheetJS";
+							var wb = XLSX.utils.book_new();
+							var ws = XLSX.utils.json_to_sheet(json);
+							XLSX.utils.book_append_sheet(wb, ws, ws_name);
+							XLSX.writeFile(wb, filename);
+						}).catch(() => {
+							this.$message({
+								type: 'info',
+								message: '已取消下载'
+							});          
+						});
+					}
+				},
+				created: function(){
+					this.end=this.pagesize
+					// getdate(){
+						// axios.get("https://autumnfish.cn/api/joke/list?num=6")
+						var defauldate=new Date();
+						
+						// var starttime = defauldate.getFullYear() +'-'+ (defauldate.getMonth()+1) + "-" + defauldate.getDate(); //获取当前日(1-31)
+						// var endtime = defauldate.getFullYear() +'-'+ (defauldate.getMonth()+1) + "-" + (defauldate.getDate()+1); //获取当前日(1-31)
+						// console.log(starttime)
+						// console.log(endtime)
+						const postdata={
+							// "name":"",
+							"starttime": "",
+							"endtime": ""
+							}
+						// url="./data/shuju.json?product="+
+						// axios.get("./data/shuju.json")
+						// axios.post("http://192.168.3.100:10085/api/v1/findmodels",postdata,{timeout: 1000})
+						axios.post("http://192.168.3.100:10085/api/v1/findmodels",postdata)
+							.then(res => {
+								console.log("长度"+res.data.datalist.length)
+								// console.log("长度"+res.data.datalist)
+								
+								this.message=res.data.datalist.slice(0,this.pagesize);
+								this.allmessage=res.data.datalist;
+								console.log("全部数据长度"+this.allmessage.length)
+								this.downloadMessage = []
+								for(i=0;i<res.data.datalist.length;i++){
+									// Vue.$set([downloadMessage],'模型名称',121)
+									// this.downloadMessage[i].模型名称 = {}
+									this.downloadMessage[i] = {}
+									this.downloadMessage[i].模型名称 = res.data.datalist[i].modelsname
+									if(res.data.datalist[i].status == 0){
+										this.downloadMessage[i].状态 = "暂停"
+									}else{
+										this.downloadMessage[i].状态 = "正常"
+									}
+									this.downloadMessage[i].产品 = res.data.datalist[i].gamename
+									this.downloadMessage[i].渠道号 = res.data.datalist[i].xdh
+									this.downloadMessage[i].模板 = res.data.datalist[i].mb
+									this.downloadMessage[i].短信网关 = res.data.datalist[i].dxwg
+									this.downloadMessage[i].创建日期 = res.data.datalist[i].creattime
+									this.downloadMessage[i].模型数据总量 = res.data.datalist[i].DataCount
+									this.downloadMessage[i].发送成功总量 = res.data.datalist[i].userDataCount
+									this.downloadMessage[i].IP排重总量 = res.data.datalist[i].clickDataCount
+									
+									var value1=Math.round(res.data.datalist[i].clickDataCount/res.data.datalist[i].userDataCount*100)
+									if(res.data.datalist[i].userDataCount == 0){
+										value1 = 0
+									}
+									// console.log(value1)
+									this.downloadMessage[i].点击率 = value1+"%"
+									var value2=Math.round(res.data.datalist[i].userDataCount/res.data.datalist[i].DataCount*100)
+									if(res.data.datalist[i].DataCount == 0){
+										value2 = 0
+									}
+									this.downloadMessage[i].短信成功率 = value2+"%"
+									// console.log(value2)
+									// console.log(this.downloadMessage[i])
+								}
+								this.totals=res.data.datalist.length
+							})
+							.catch(err => {
+								console.error(err);
+								// console.error("请求超时");
+								// this.error="请求超时"+err
+							})
+						// console.log("object");
+					// }
+				}
+				
+		    });
+			
+			
+		
+		</script>
+	</body>
+</html>

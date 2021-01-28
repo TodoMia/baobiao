@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link rel="stylesheet" href="./css/shuju.css">
+		<script src="js/vue2-6.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/vue-router2.0.js" type="text/javascript" charset="utf-8"></script>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<!-- 引入样式 -->
+		<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+		<!-- 引入组件库 -->
+		<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+		<!-- <script src="https://cuikangjie.github.io/JsonExportExcel/dist/JsonExportExcel.min.js"></script> -->
+		<script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+
+	</head>
+	<body>
+		<div id="app">
+			<h1>{{value1}}</h1>
+			<h1>{{value2}}</h1>
+			<input type="date" name="" id="" value="" />
+			<template>
+			  <div class="block">
+			    <el-date-picker
+			      v-model="value1"
+			      type="dates"
+			      placeholder="选择日期">
+			    </el-date-picker>
+				<!-- year/month/date/dates/ week/datetime/datetimerange/ daterange/monthrange -->
+				<el-date-picker
+				      v-model="value2"
+				      type="daterange"
+					  unlink-panels
+				      range-separator="至"
+				      start-placeholder="开始日期"
+				      end-placeholder="结束日期">
+				    </el-date-picker>
+			  </div>
+			</template>
+		</div>
+
+
+		
+		<script type="text/javascript">
+		new Vue({
+		    el:'#app',
+		    data() {
+				return {
+					value1: '',
+					value2: '',
+				}
+		    },
+			computed: {
+			},
+			mounted() {
+				
+			},
+			methods:{
+			},
+			created: function(){
+				
+			},
+			
+			
+			
+		});
+		  
+		</script>
+		
+	</body>
+</html>

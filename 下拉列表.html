@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link rel="stylesheet" href="./css/shuju.css">
+		<script src="js/vue2-6.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/vue-router2.0.js" type="text/javascript" charset="utf-8"></script>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<!-- 引入样式 -->
+		<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+		<!-- 引入组件库 -->
+		<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+		<!-- <script src="https://cuikangjie.github.io/JsonExportExcel/dist/JsonExportExcel.min.js"></script> -->
+		<script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+	</head>
+	<body>
+		<div id="app">
+			  <template>
+			  	<!-- <el-select v-model="value" change="bian" filterable placeholder="请选择"> -->
+			  	<el-select v-model="value" @change="bian" filterable placeholder="请选择">
+			  	  <el-option
+			  		v-for="opt in states"
+			  		:key="opt"
+			  		:label="opt"
+			  		:value="opt"
+			  		>
+			  	  </el-option>
+			  	</el-select>
+			  </template>
+			  <template>
+			  	<el-select v-model="value2" filterable placeholder="请选择">
+			  	  <el-option
+			  		v-for="opt in states"
+			  		:key="opt"
+			  		:label="opt"
+			  		:value="opt"
+			  		>
+			  	  </el-option>
+			  	</el-select>
+			  </template>
+			  <p>value：{{value}}</p>
+			  <p>value2：{{value2}}</p>
+			  <p>com：{{com}}</p>
+			  <p>com2：{{com2}}</p>
+			  <p>{{co}}</p>
+		</div>
+
+
+		
+		<script type="text/javascript">
+		new Vue({
+		    el:'#app',
+		    data: {
+				options: [],
+				value: '',
+				value2: '',
+				list: [],
+				loading: false,
+				states: ["Alabama", "Alaska", "Arizona",
+				"Indiana", "Iowa", "Kansas", "Kentucky",
+				"Connecticut", "Delaware", "Florida",
+				"Arkansas", "California", "Colorado",
+				"Georgia", "Hawaii", "Idaho", "Illinois",
+				"Louisiana", "Maine", "Maryland",
+				"Massachusetts", "Michigan", "Minnesota",
+				"Mississippi", "Missouri", "Montana",
+				"Nebraska", "Nevada", "New Hampshire",
+				"New Jersey", "New Mexico", "New York",
+				"North Carolina", "North Dakota", "Ohio",
+				"Oklahoma", "Oregon", "Pennsylvania",
+				"Rhode Island", "South Carolina",
+				"South Dakota", "Tennessee", "Texas",
+				"Utah", "Vermont", "Virginia",
+				"Washington", "West Virginia", "Wisconsin",
+				"Wyoming"],
+				fullName:'啊啊啊',
+				state: [
+					{
+						name:'c',
+						value:12
+					},{
+						name:'f',
+						value:35
+					},{
+						name:'x',
+						value:56
+					},{
+						name:'n',
+						value:34
+					},{
+						name:'r',
+						value:13
+					},{
+						name:'y',
+						value:54
+					},{
+						name:'i',
+						value:43
+					},
+				],
+				aa:[],
+				com:'',
+				co:''
+		    },
+			computed: {
+			    com2: function () {
+					this.com=this.value+this.value2
+					this.co="1212"
+			      return this.com,this.co
+			    }
+			},
+			mounted() {
+			      this.list = this.states.map(item => {
+			        return { value: `value:${item}`, label: `label:${item}` };
+			      });
+				  
+				  // this.aa=this.state.sort(function(a,b){
+					 //  return a.name 
+				  // })
+			    },
+			methods:{
+				// 下拉框选中值发生变化时触发
+				bian(item){
+					console.log("变了"+item)
+				}
+			},
+			created: function(){
+				// this.fullName="adasd"
+				// function compare(property){
+				//     return function(a,b){
+				//         var value1 = a[property];
+				//         var value2 = b[property];
+				// 		console.log(value1)
+				//         return value1 - value2;
+				//     }
+				// }
+				// console.log(this.state.sort(compare('value')))
+				
+				this.state.sort(function(a, b) {
+					return (a.name + '').localeCompare(b.name + '')
+				})
+
+				
+			},
+			
+			
+			
+		});
+		  
+		</script>
+		
+		<script type="text/javascript">
+			// var arr = [
+			//     {name:'zopp',age:10},
+			//     {name:'gpp',age:18},
+			//     {name:'yjj',age:8}
+			// ];
+			
+			// function compare(property){
+			//     return function(a,b){
+			//         var value1 = a[property];
+			//         var value2 = b[property];
+			//         return value1 - value2;
+			//     }
+			// }
+			// console.log(arr.sort(compare('age')))
+		</script>
+	</body>
+</html>

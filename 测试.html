@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>运营报表</title>
+		<link rel="stylesheet" href="./css/shuju.css">
+		<!-- <script src="js/vue2-6.js" type="text/javascript" charset="utf-8"></script> -->
+		<script src="./js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/vue-router2.0.js" type="text/javascript" charset="utf-8"></script>
+		<!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
+		<script src="./js/axios.min.js" type="text/javascript" charset="utf-8"></script>
+		<!-- 引入样式 -->
+		<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+		<!-- 引入组件库 -->
+		<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+		<!-- <script src="https://cuikangjie.github.io/JsonExportExcel/dist/JsonExportExcel.min.js"></script> -->
+		<!-- <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script> -->
+		<script src="./js/xlsx.full.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div id="app">
+			<h1>运营报表</h1>
+			
+			
+		</div>
+
+
+		
+		<script type="text/javascript">
+		
+		    new Vue({
+		        el:'#app',
+		        data: {
+					
+		        },
+				methods:{
+					chaxun(){
+						const postdata={
+							"starttime": '',
+							"endtime": ''
+						}
+						console.log(postdata)
+						url="http://139.196.23.101:10085/api/v1/findmodels"  //pai
+						// url="http://139.196.23.101:8088/api/v1/findmodels"   //yqh
+						// url="http://192.168.3.100:10085/api/v1/findmodels"
+						axios.post(url,postdata)
+						.then(res => {
+							console.log("查询数据"+res.data.datalist.length)
+							const {data:{datalist=[]}} = res
+							console.log(res)
+							console.log(datalist) 
+						})
+						.catch(err => {    
+							console.error(err);
+						})
+					}
+				},
+				created: function(){
+					this.chaxun()
+				}
+		    });
+			
+			
+		
+		</script>
+	</body>
+</html>
