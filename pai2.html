@@ -87,7 +87,6 @@
 			</div>
 			
 			<table border="1px" cellspacing="0" cellpadding="20px" class="table">
-				
 				<tr>
 					<td rowspan="2">运营商</td>
 					<td rowspan="2">模型名称</td>
@@ -226,10 +225,10 @@
 						}else{
 							for(i=0;i<this.reqmessage.length;i++){
 								// console.log(this.reqmessage[i].gamename)
-							  var provl=this.reqmessage[i].gamename.substring(0,2)
-							  if(provl == val && this.reqmessage[i].modelsname.substring(0,2) == this.gateway){
-								  this.allmessage.push(this.reqmessage[i])
-							  }
+								var provl=this.reqmessage[i].gamename.substring(0,2)
+								if(provl == val && this.reqmessage[i].modelsname.substring(0,2) == this.gateway){
+									this.allmessage.push(this.reqmessage[i])
+								}
 							}
 						}
 					  }
@@ -238,9 +237,9 @@
 					  this.sumuserDataCount=0
 					  this.sumdiffClickCount=0
 					  for(i=0;i<this.allmessage.length;i++){
-							this.sumDataCount+=Number(this.allmessage[i].DataCount)
-							this.sumuserDataCount+=Number(this.allmessage[i].userDataCount)
-							this.sumdiffClickCount+=Number(this.allmessage[i].diffClickCount)
+						this.sumDataCount+=Number(this.allmessage[i].DataCount)
+						this.sumuserDataCount+=Number(this.allmessage[i].userDataCount)
+						this.sumdiffClickCount+=Number(this.allmessage[i].diffClickCount)
 					  }
 					  // 总计
 					  this.message=this.allmessage.slice(0,this.pagesize);
@@ -374,7 +373,6 @@
 						axios.post(url,postdata)
 							.then(res => {
 								console.log("查询数据"+res.data.datalist.length)
-								// console.log("长度"+res.data.length)
 								this.reqmessage=res.data.datalist;
 								this.reqmessage.sort(function(a, b) {
 									return (a.modelsname + '').localeCompare(b.modelsname + '')
@@ -388,11 +386,9 @@
 									this.downloadMessage[i] = {}
 									this.downloadMessage[i].运营商 = this.reqmessage[i].modelsname.substring(0,2)
 									if(this.options2.indexOf(this.reqmessage[i].modelsname.substring(0,2)) == '-1'){
-										// console.log(this.options2)
 										this.options2.push(this.reqmessage[i].modelsname.substring(0,2))
 									}
 									this.downloadMessage[i].模型名称 = this.reqmessage[i].modelsname
-									
 									if(this.reqmessage[i].status == 0){
 										this.downloadMessage[i].状态 = "暂停"
 									}else{
@@ -400,17 +396,13 @@
 									}
 									this.downloadMessage[i].链接 = this.reqmessage[i].gamename
 									var reg = new RegExp('[\u4e00-\u9fa5]+$','g');
-									// var gamenamevl=this.reqmessage[i].gamename.match(/[\u4e00-\u9fa5]/g).join("")
 									var gamenamevl=this.reqmessage[i].gamename.substring(0,2)
-									// console.log(gamenamevl)
 									if(this.options.indexOf(gamenamevl) == '-1'){
-										// console.log(this.options)
 										this.options.push(gamenamevl)
 									}
 									this.downloadMessage[i].渠道端口号 = this.reqmessage[i].qddk
 									this.downloadMessage[i].渠道名称 = this.reqmessage[i].qdmc
 									this.downloadMessage[i].短信网关 = this.reqmessage[i].dxwg
-									
 									this.downloadMessage[i].创建日期 = this.reqmessage[i].creattime
 									this.downloadMessage[i].模型数据总量 = this.reqmessage[i].DataCount
 									this.downloadMessage[i].发送成功总量 = this.reqmessage[i].userDataCount
@@ -419,7 +411,7 @@
 									this.downloadMessage[i].点击率 = value1+"%"
 									var value2=(this.reqmessage[i].userDataCount/this.reqmessage[i].DataCount*100).toFixed(3)
 									this.downloadMessage[i].短信成功率 = value2+"%"
-
+									// 总计
 									this.sumDataCount+=Number(this.reqmessage[i].DataCount)
 									this.sumuserDataCount+=Number(this.reqmessage[i].userDataCount)
 									this.sumdiffClickCount+=Number(this.reqmessage[i].diffClickCount)
