@@ -78,6 +78,7 @@
 					<span class="chaxun" @click="chaxun">查询</span>
 					<!-- <span class="chaxun" @click="xiazai">下载</span> -->
 					<el-button type="text" @click="open">下载</el-button>
+					<el-button type="text" @click="upload">修改文案</el-button>
 					<!-- <el-button type="text" @click="xiazai">下载</el-button> -->
 				</div>
 				<div>
@@ -153,6 +154,26 @@
 
 				 -->
 			</div>
+
+			<!-- 上传 -->
+			<div class="uploadbg" v-show="uploadbox">
+				<div class="uploadbox">
+					<span class="closeupload" @click="closeupload"><i class="el-icon-close"></i></span>
+					<!-- <p class="title">修改文案</p><br> -->
+					<el-upload
+						ref="upload"
+						class="upload-demo"
+						drag
+						action="http://139.196.23.101:50000/api/v1/updatelink"
+						:on-error="uploagerror"
+						:on-success="handleAvatarSuccess"
+						>
+						<i class="el-icon-upload"></i>
+						<div class="el-upload__text"><em>修改文案</em>，将文件拖到此处，或<em>点击上传</em></div>
+						<!-- <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div> -->
+					</el-upload>
+				</div>
+			</div>
 			
 			
 		</div>
@@ -164,6 +185,7 @@
 		    new Vue({
 		        el:'#app',
 		        data: {
+					uploadbox:false,
 					sumDataCount: 0,
 					sumuserDataCount: 0,
 					sumdiffClickCount: 0,
@@ -302,6 +324,32 @@
 					}
 				},
 				methods:{
+					closeupload(){
+						this.uploadbox = false
+					},
+					handleAvatarSuccess(res, file){			
+						var _this=this		
+						console.log("上传成功")
+						console.log(res)
+						console.log(file)
+						console.log(res.msg)
+						// this.chaxun()
+						this.$message({
+							message: res.msg,
+							type: 'success',
+						});
+						setTimeout(function(){
+							_this.$refs.upload.clearFiles();
+						},5000)
+					},
+					uploagerror(){
+
+					},
+					// 上传
+					upload(){
+						console.log("上传")
+						this.uploadbox=true
+					},
 					dingshi(){
 						// this.chaxun()
 						// console.log("定时器执行了")

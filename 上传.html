@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>运营报表</title>
+		<link rel="stylesheet" href="./css/shuju.css">
+		<script src="./js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/vue-router2.0.js" type="text/javascript" charset="utf-8"></script>
+		<script src="./js/axios.min.js" type="text/javascript" charset="utf-8"></script>
+		<!-- 引入样式 -->
+		<link rel="stylesheet" type="text/css" href="./css/element.css"/>
+		<!-- 引入组件库 -->
+		<script src="./js/element_index.js" type="text/javascript"></script>
+		<script src="./js/xlsx.full.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div id="app">
+			<div class="search">
+				<div>
+					<span class="chaxun" @click="upload">上传</span>
+				</div>
+			</div>
+			<!-- v-show="uploadbox" -->
+			<div class="uploadbg" >
+				<div class="uploadbox">
+					<span class="closeupload" @click="closeupload"><i class="el-icon-close"></i></span>
+					<el-upload
+						ref="upload"
+						class="upload-demo"
+						drag
+						action="https://jsonplaceholder.typicode.com/posts/"
+						:on-success="handleAvatarSuccess"
+						>
+						<!-- <i class="el-icon-upload"></i> -->
+						<!-- <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div> -->
+					</el-upload>
+				</div>
+			</div>
+			<!--  -->
+			
+		</div>
+
+
+		
+		<script type="text/javascript">
+		
+		    new Vue({
+		        el:'#app',
+		        data: {
+					uploadbox:false,
+		        },
+				methods:{
+					closeupload(){
+						this.uploadbox = false
+						
+					},
+					handleAvatarSuccess(res, file){	
+						var _this=this		
+						console.log("上传成功")
+						console.log(res)
+						console.log(file)
+						console.log(res.msg)
+						this.$message({
+							message: res.msg,
+							type: 'success',
+						});
+						setTimeout(function(){
+							_this.$refs.upload.clearFiles();
+						},5000)
+					},
+					uploagerror(){
+
+					},
+					// 上传
+					upload(){
+						console.log("上传")
+						this.uploadbox=true
+					},
+					
+				},
+				
+		    });
+		
+			
+		</script>
+	</body>
+</html>
