@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link rel="stylesheet" href="./css/shuju.css">
+		<script src="js/vue2-6.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/vue-router2.0.js" type="text/javascript" charset="utf-8"></script>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<!-- 引入样式 -->
+		<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+		<!-- 引入组件库 -->
+		<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+		<!-- <script src="https://cuikangjie.github.io/JsonExportExcel/dist/JsonExportExcel.min.js"></script> -->
+		<script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+	</head>
+	<body>
+		<div id="app">
+			<h1>运营报表</h1>
+			<!-- {{ordata}} -->
+			
+			
+		</div>
+
+
+		
+		<script type="text/javascript">
+		
+		    new Vue({
+		        el:'#app',
+		        data: {
+					ordata:[
+							{
+								"id":"1371635606074003458",
+								"parentId":0,"name":"项目",
+								"priority":5,
+								"isPublic":0,
+								"flag":null,
+								"docNum":0,
+								"actionCode":null,
+								"needCheck":null,
+								"needApprove":null,
+								"checkPass":null,"checkId":null,
+								"uniqueIdentification":null,
+								"userDocs":null,
+								"children":[
+									{
+										"id":"1371635565422809090",
+										"parentId":"1371635606074003458",
+										"name":"部门","priority":0,"isPublic":0,
+										"flag":null,"docNum":0,"actionCode":null,
+										"needCheck":null,"needApprove":null,"checkPass":null,
+										"checkId":null,"uniqueIdentification":null,
+										"userDocs":null,"children":[],
+									},
+								],
+							},
+							{
+								"id":"1371635650156138498","parentId":0,
+								"name":"法规12","priority":9,"isPublic":0,
+								"flag":null,"docNum":0,"actionCode":null,
+								"needCheck":null,"needApprove":null,
+								"checkPass":null,"checkId":null,
+								"uniqueIdentification":null,
+								"userDocs":null,
+								"children":[
+									{
+										"id":"1371636724220923906",
+										"parentId":"1371635650156138498","name":"医疗器械CE","priority":4,
+										"isPublic":0,"flag":null,"docNum":0,"actionCode":null,"needCheck":null,
+										"needApprove":null,"checkPass":null,"checkId":null,"uniqueIdentification":null,
+										"userDocs":null,"children":[],
+									},
+									{
+										"id":"1371636873223573506","parentId":"1371635650156138498","name":"IVD 国内",
+										"priority":3,"isPublic":0,"flag":null,"docNum":0,"actionCode":null,
+										"needCheck":null,"needApprove":null,"checkPass":null,"checkId":null,
+										"uniqueIdentification":null,"userDocs":null,"children":[{"id":"1371636645871325185","parentId":"1371636873223573506","name":"医疗器械国内123","priority":1,"isPublic":0,"flag":null,"docNum":0,"actionCode":null,"needCheck":null,"needApprove":null,"checkPass":null,"checkId":null,"uniqueIdentification":null,"userDocs":null,"children":[]}]},{"id":"1371636921390960641","parentId":"1371635650156138498","name":"IVD CE","priority":8,"isPublic":0,"flag":null,"docNum":0,"actionCode":null,"needCheck":null,"needApprove":null,"checkPass":null,"checkId":null,"uniqueIdentification":null,"userDocs":null,"children":[]},{"id":"1371636991578443778","parentId":"1371635650156138498","name":"IVD FDA","priority":6,"isPublic":0,"flag":null,"docNum":0,"actionCode":null,"needCheck":null,"needApprove":null,"checkPass":null,"checkId":null,"uniqueIdentification":null,"userDocs":null,"children":[]}]},{"id":"1371648739383779330","parentId":0,"name":"111","priority":111,"isPublic":0,"flag":null,"docNum":0,"actionCode":null,"needCheck":null,"needApprove":null,"checkPass":null,"checkId":null,"uniqueIdentification":null,"userDocs":null,"children":[]}]
+		        },
+				methods:{
+					pai(){
+						
+					},
+					paixu(){
+						
+					}
+					
+
+   					
+				},
+				created: function(){
+					
+				}
+				
+		    });
+			
+			
+		
+		</script>
+	</body>
+</html>
