@@ -25,6 +25,7 @@
 			    <el-date-picker
 			      v-model="value1"
 			      type="dates"
+				  format="timestamp"
 			      placeholder="选择日期">
 			    </el-date-picker>
 				<!-- year/month/date/dates/ week/datetime/datetimerange/ daterange/monthrange -->
@@ -37,6 +38,15 @@
 				      end-placeholder="结束日期">
 				    </el-date-picker>
 			  </div>
+			  <div class="block">
+			      <span class="demonstration">默认</span>
+			      <el-date-picker
+			        v-model="value1"
+			        type="datetime"
+					value-format="timestamp"
+			        placeholder="选择日期时间">
+			      </el-date-picker>
+			    </div>
 			</template>
 		</div>
 
